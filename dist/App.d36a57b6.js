@@ -25748,7 +25748,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"Results.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"Repo.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25778,6 +25778,71 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+var Repo =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Repo, _React$Component);
+
+  function Repo() {
+    _classCallCheck(this, Repo);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Repo).apply(this, arguments));
+  }
+
+  _createClass(Repo, [{
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+          repoName = _this$props.repoName,
+          repoDescription = _this$props.repoDescription,
+          numberOfStars = _this$props.numberOfStars,
+          numberOfIssues = _this$props.numberOfIssues,
+          ownerUsername = _this$props.ownerUsername,
+          ownerAvatar = _this$props.ownerAvatar;
+      return _react.default.createElement("div", null, _react.default.createElement("div", null, _react.default.createElement("img", {
+        src: ownerAvatar,
+        alt: ownerUsername
+      })), _react.default.createElement("div", null, _react.default.createElement("h1", null, repoName), _react.default.createElement("h2", null, numberOfStars, "-", numberOfIssues, "-", ownerUsername), _react.default.createElement("p", null, repoDescription)));
+    }
+  }]);
+
+  return Repo;
+}(_react.default.Component);
+
+var _default = Repo;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"Results.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _Repo = _interopRequireDefault(require("./Repo"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 var Results =
 /*#__PURE__*/
 function (_React$Component) {
@@ -25791,29 +25856,67 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Results).call(this, props));
     _this.state = {
       items: [],
-      loading: true
+      loading: true,
+      showPrompt: true
     };
+    _this.promptToggle = _this.promptToggle.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Results, [{
+    key: "promptToggle",
+    value: function promptToggle() {
+      this.setState({
+        showPrompt: !this.state.showPrompt
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       var _this2 = this;
 
-      fetch("https://api.github.com/search/repositories?q=created:>2017-10-22&sort=stars&order=desc").then(function (res) {
+      if (this.state.showPrompt) {
+        var date = prompt("Show me the most starred Github repos created in the last 30 days relative to (ex:2017-01-22)", "2017-01-22");
+        this.promptToggle;
+      }
+
+      fetch("https://api.github.com/search/repositories?q=created:>" + date + "&sort=stars&order=desc").then(function (res) {
         return res.json();
-      }).then(function (x) {
+      }).then(function (json) {
+        var items;
+
+        if (json.items) {
+          if (Array.isArray(json.items)) {
+            items = json.items;
+          } else {
+            items = [json.items];
+          }
+        } else {
+          items = [];
+        }
+
         _this2.setState({
           loading: false,
-          items: x
+          items: items
         });
       });
     }
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement("h3", null, "whatever");
+      console.log(this.state.loading);
+      console.log(this.state.items);
+      return _react.default.createElement("div", null, _react.default.createElement("div", null, this.state.items.map(function (repo) {
+        return _react.default.createElement(_Repo.default, {
+          key: repo.id,
+          repoName: repo.name,
+          repoDescription: repo.description,
+          numberOfStars: repo.stargazers_count,
+          numberOfIssues: repo.open_issues_count,
+          ownerUsername: repo.owner.login,
+          ownerAvatar: repo.owner.avatar_url
+        });
+      })));
     }
   }]);
 
@@ -25822,7 +25925,7 @@ function (_React$Component) {
 
 var _default = Results;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./Repo":"Repo.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
