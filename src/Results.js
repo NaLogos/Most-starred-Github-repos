@@ -8,31 +8,23 @@ class Results extends React.Component {
     this.state = {
       items: [],
       loading: true,
-      showPrompt: true,
-      date: ""
+      page: 1,
+      date: "",
+      scrolling: false,
+      totalPages: 34
     };
-
-    this.promptToggle = this.promptToggle.bind(this);
+    this.state.date = prompt(
+      "Show me the most starred Github repos created in the last 30 days relative to (ex:2017-01-22)",
+      "2017-01-22"
+    );
   }
 
-  promptToggle() {
-    this.setState({ showPrompt: !this.state.showPrompt });
-  }
-  componentDidMount() {
-    if (this.state.showPrompt) {
-      var date = prompt(
-        "Show me the most starred Github repos created in the last 30 days relative to (ex:2017-01-22)",
-        "2017-01-22"
-      );
+  search() {
+    const url = `https://api.github.com/search/repositories?q=created:>${
+      this.state.date
+    }&sort=stars&order=desc${this.state.page}`;
 
-      this.promptToggle;
-    }
-
-    fetch(
-      "https://api.github.com/search/repositories?q=created:>" +
-        date +
-        "&sort=stars&order=desc"
-    )
+    fetch(url)
       .then(res => res.json())
       .then(json => {
         let items;
@@ -48,36 +40,70 @@ class Results extends React.Component {
 
         this.setState({
           loading: false,
-          items,
-          date
+          items: [...this.state.items, ...items],
+          scrolling: false
         });
       });
   }
 
+  componentDidMount() {
+    this.search();
+    this.scrollListener = window.addEventListener("scroll", e => {
+      this.handleScroll(e);
+    });
+  }
+
+  loadMore() {
+    this.setState(
+      prevState => ({
+        page: prevState.page + 1,
+        scrolling: true
+      }),
+      this.search()
+    );
+  }
+
+  handleScroll() {
+    const { scrolling, totalPages, page } = this.state;
+    if (scrolling) return;
+    if (totalPages <= page) return;
+    const lastRepo = document.querySelector("ul.repos > li:last-child");
+    const lastRepoOffset = lastRepo.offsetTop + lastRepo.clientHeight;
+    const pageOffset = window.pageYOffset + window.innerHeight;
+    var bottomOffset = 50;
+    if (pageOffset > lastRepoOffset - bottomOffset) {
+      this.loadMore();
+    }
+  }
+
   render() {
-    console.log(this.state.loading);
-    console.log(this.state.items);
+    if (this.state.loading) {
+      return <h1 className="loading">LOADING....</h1>;
+    }
+
     return (
       <div>
-        <div>
+        <ul className="repos">
           {this.state.items.map(repo => {
             return (
               <React.Fragment key={Math.random()}>
-                <Repo
-                  key={repo.id}
-                  repoName={repo.name}
-                  repoDescription={repo.description}
-                  numberOfStars={repo.stargazers_count}
-                  numberOfIssues={repo.open_issues_count}
-                  ownerUsername={repo.owner.login}
-                  ownerAvatar={repo.owner.avatar_url}
-                  date={this.state.date}
-                />
-                <hr key={Math.random()} />
+                <li key={repo.id}>
+                  <Repo
+                    key={repo.id}
+                    repoName={repo.name}
+                    repoDescription={repo.description}
+                    numberOfStars={repo.stargazers_count}
+                    numberOfIssues={repo.open_issues_count}
+                    ownerUsername={repo.owner.login}
+                    ownerAvatar={repo.owner.avatar_url}
+                    date={this.state.date}
+                  />
+                  <hr key={Math.random()} />
+                </li>
               </React.Fragment>
             );
           })}
-        </div>
+        </ul>
       </div>
     );
   }

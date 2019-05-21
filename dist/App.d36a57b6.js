@@ -25842,6 +25842,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -25850,9 +25858,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -25872,31 +25880,22 @@ function (_React$Component) {
     _this.state = {
       items: [],
       loading: true,
-      showPrompt: true,
-      date: ""
+      page: 1,
+      date: "",
+      scrolling: false,
+      totalPages: 34
     };
-    _this.promptToggle = _this.promptToggle.bind(_assertThisInitialized(_this));
+    _this.state.date = prompt("Show me the most starred Github repos created in the last 30 days relative to (ex:2017-01-22)", "2017-01-22");
     return _this;
   }
 
   _createClass(Results, [{
-    key: "promptToggle",
-    value: function promptToggle() {
-      this.setState({
-        showPrompt: !this.state.showPrompt
-      });
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "search",
+    value: function search() {
       var _this2 = this;
 
-      if (this.state.showPrompt) {
-        var date = prompt("Show me the most starred Github repos created in the last 30 days relative to (ex:2017-01-22)", "2017-01-22");
-        this.promptToggle;
-      }
-
-      fetch("https://api.github.com/search/repositories?q=created:>" + date + "&sort=stars&order=desc").then(function (res) {
+      var url = "https://api.github.com/search/repositories?q=created:>".concat(this.state.date, "&sort=stars&order=desc").concat(this.state.page);
+      fetch(url).then(function (res) {
         return res.json();
       }).then(function (json) {
         var items;
@@ -25913,21 +25912,67 @@ function (_React$Component) {
 
         _this2.setState({
           loading: false,
-          items: items,
-          date: date
+          items: [].concat(_toConsumableArray(_this2.state.items), _toConsumableArray(items)),
+          scrolling: false
         });
       });
     }
   }, {
-    key: "render",
-    value: function render() {
+    key: "componentDidMount",
+    value: function componentDidMount() {
       var _this3 = this;
 
-      console.log(this.state.loading);
-      console.log(this.state.items);
-      return _react.default.createElement("div", null, _react.default.createElement("div", null, this.state.items.map(function (repo) {
+      this.search();
+      this.scrollListener = window.addEventListener("scroll", function (e) {
+        _this3.handleScroll(e);
+      });
+    }
+  }, {
+    key: "loadMore",
+    value: function loadMore() {
+      this.setState(function (prevState) {
+        return {
+          page: prevState.page + 1,
+          scrolling: true
+        };
+      }, this.search());
+    }
+  }, {
+    key: "handleScroll",
+    value: function handleScroll() {
+      var _this$state = this.state,
+          scrolling = _this$state.scrolling,
+          totalPages = _this$state.totalPages,
+          page = _this$state.page;
+      if (scrolling) return;
+      if (totalPages <= page) return;
+      var lastRepo = document.querySelector("ul.repos > li:last-child");
+      var lastRepoOffset = lastRepo.offsetTop + lastRepo.clientHeight;
+      var pageOffset = window.pageYOffset + window.innerHeight;
+      var bottomOffset = 50;
+
+      if (pageOffset > lastRepoOffset - bottomOffset) {
+        this.loadMore();
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      if (this.state.loading) {
+        return _react.default.createElement("h1", {
+          className: "loading"
+        }, "LOADING....");
+      }
+
+      return _react.default.createElement("div", null, _react.default.createElement("ul", {
+        className: "repos"
+      }, this.state.items.map(function (repo) {
         return _react.default.createElement(_react.default.Fragment, {
           key: Math.random()
+        }, _react.default.createElement("li", {
+          key: repo.id
         }, _react.default.createElement(_Repo.default, {
           key: repo.id,
           repoName: repo.name,
@@ -25936,10 +25981,10 @@ function (_React$Component) {
           numberOfIssues: repo.open_issues_count,
           ownerUsername: repo.owner.login,
           ownerAvatar: repo.owner.avatar_url,
-          date: _this3.state.date
+          date: _this4.state.date
         }), _react.default.createElement("hr", {
           key: Math.random()
-        }));
+        })));
       })));
     }
   }]);
@@ -26028,7 +26073,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51249" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62996" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
