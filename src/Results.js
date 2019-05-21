@@ -8,7 +8,8 @@ class Results extends React.Component {
     this.state = {
       items: [],
       loading: true,
-      showPrompt: true
+      showPrompt: true,
+      date: ""
     };
 
     this.promptToggle = this.promptToggle.bind(this);
@@ -47,7 +48,8 @@ class Results extends React.Component {
 
         this.setState({
           loading: false,
-          items
+          items,
+          date
         });
       });
   }
@@ -60,15 +62,19 @@ class Results extends React.Component {
         <div>
           {this.state.items.map(repo => {
             return (
-              <Repo
-                key={repo.id}
-                repoName={repo.name}
-                repoDescription={repo.description}
-                numberOfStars={repo.stargazers_count}
-                numberOfIssues={repo.open_issues_count}
-                ownerUsername={repo.owner.login}
-                ownerAvatar={repo.owner.avatar_url}
-              />
+              <React.Fragment key={Math.random()}>
+                <Repo
+                  key={repo.id}
+                  repoName={repo.name}
+                  repoDescription={repo.description}
+                  numberOfStars={repo.stargazers_count}
+                  numberOfIssues={repo.open_issues_count}
+                  ownerUsername={repo.owner.login}
+                  ownerAvatar={repo.owner.avatar_url}
+                  date={this.state.date}
+                />
+                <hr key={Math.random()} />
+              </React.Fragment>
             );
           })}
         </div>

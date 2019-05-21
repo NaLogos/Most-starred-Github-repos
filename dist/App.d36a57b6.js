@@ -25798,11 +25798,26 @@ function (_React$Component) {
           numberOfStars = _this$props.numberOfStars,
           numberOfIssues = _this$props.numberOfIssues,
           ownerUsername = _this$props.ownerUsername,
-          ownerAvatar = _this$props.ownerAvatar;
-      return _react.default.createElement("div", null, _react.default.createElement("div", null, _react.default.createElement("img", {
+          ownerAvatar = _this$props.ownerAvatar,
+          date = _this$props.date;
+      return _react.default.createElement("div", {
+        className: "container"
+      }, _react.default.createElement("div", {
+        className: "img"
+      }, _react.default.createElement("img", {
         src: ownerAvatar,
         alt: ownerUsername
-      })), _react.default.createElement("div", null, _react.default.createElement("h1", null, repoName), _react.default.createElement("h2", null, numberOfStars, "-", numberOfIssues, "-", ownerUsername), _react.default.createElement("p", null, repoDescription)));
+      })), _react.default.createElement("div", {
+        className: "reponame"
+      }, _react.default.createElement("h1", null, repoName)), _react.default.createElement("div", {
+        className: "repodescription"
+      }, _react.default.createElement("h4", null, repoDescription)), _react.default.createElement("div", {
+        className: "stars"
+      }, _react.default.createElement("h3", null, " Stars: ", numberOfStars)), _react.default.createElement("div", {
+        className: "issues"
+      }, _react.default.createElement("h3", null, "Issues: ", numberOfIssues)), _react.default.createElement("div", {
+        className: "subby"
+      }, _react.default.createElement("h3", null, "Submitted 30 days ago (relative to ", date, ") by ", ownerUsername)));
     }
   }]);
 
@@ -25857,7 +25872,8 @@ function (_React$Component) {
     _this.state = {
       items: [],
       loading: true,
-      showPrompt: true
+      showPrompt: true,
+      date: ""
     };
     _this.promptToggle = _this.promptToggle.bind(_assertThisInitialized(_this));
     return _this;
@@ -25897,25 +25913,33 @@ function (_React$Component) {
 
         _this2.setState({
           loading: false,
-          items: items
+          items: items,
+          date: date
         });
       });
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       console.log(this.state.loading);
       console.log(this.state.items);
       return _react.default.createElement("div", null, _react.default.createElement("div", null, this.state.items.map(function (repo) {
-        return _react.default.createElement(_Repo.default, {
+        return _react.default.createElement(_react.default.Fragment, {
+          key: Math.random()
+        }, _react.default.createElement(_Repo.default, {
           key: repo.id,
           repoName: repo.name,
           repoDescription: repo.description,
           numberOfStars: repo.stargazers_count,
           numberOfIssues: repo.open_issues_count,
           ownerUsername: repo.owner.login,
-          ownerAvatar: repo.owner.avatar_url
-        });
+          ownerAvatar: repo.owner.avatar_url,
+          date: _this3.state.date
+        }), _react.default.createElement("hr", {
+          key: Math.random()
+        }));
       })));
     }
   }]);
@@ -26004,7 +26028,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53393" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51249" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

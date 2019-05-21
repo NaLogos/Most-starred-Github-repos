@@ -8,20 +8,35 @@ class Repo extends React.Component {
       numberOfStars,
       numberOfIssues,
       ownerUsername,
-      ownerAvatar
+      ownerAvatar,
+      date
     } = this.props;
     return (
-      <div>
-        <div>
+      <div className="container">
+        <div className="img">
           <img src={ownerAvatar} alt={ownerUsername} />
         </div>
 
-        <div>
+        <div className="reponame">
           <h1>{repoName}</h1>
-          <h2>
-            {numberOfStars}-{numberOfIssues}-{ownerUsername}
-          </h2>
-          <p>{repoDescription}</p>
+        </div>
+
+        <div className="repodescription">
+          <h4>{repoDescription}</h4>
+        </div>
+
+        <div className="stars">
+          <h3> Stars: {numberOfStars}</h3>
+        </div>
+
+        <div className="issues">
+          <h3>Issues: {numberOfIssues}</h3>
+        </div>
+
+        <div className="subby">
+          <h3>
+            Submitted 30 days ago (relative to {date}) by {ownerUsername}
+          </h3>
         </div>
       </div>
     );

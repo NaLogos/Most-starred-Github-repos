@@ -1,0 +1,81 @@
+header {
+  background-color: #0b3c5d;
+  border: 5px solid #1d2731;
+  color: #d9b310;
+  text-align: center;
+  padding: 15px 0px;
+}
+
+.container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: 230px 1fr 1fr 8fr;
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.img {
+  grid-column: 1/2;
+  grid-row: 1/4;
+}
+
+.reponame {
+  grid-column: 2/5;
+  grid-row: 1/2;
+}
+
+.repodescription {
+  grid-column: 2/5;
+  grid-row: 2/3;
+}
+
+.stars {
+  grid-column: 2/3;
+  grid-row: 3/4;
+  padding-right: 20px;
+}
+
+.issues {
+  grid-column: 3/4;
+  grid-row: 3/4;
+  padding-right: 20px;
+}
+
+.subby {
+  grid-column: 4/5;
+  grid-row: 3/4;
+  padding-left: 20px;
+  padding-right: 30px;
+}
+
+.stars h3 {
+  border: 3px solid #000;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+
+.issues h3 {
+  border: 3px solid #000;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+
+img {
+  border: 5px solid rgb(17, 1, 31);
+  border-radius: 10px;
+  width: 190px;
+  height: 190px;
+  display: block;
+  grid-column: 1/2;
+  grid-row: 1/4;
+}
+
+body {
+  background-color: #dddddd;
+  color: rgba(12, 15, 19, 0.986);
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+
+/*# sourceMappingURL=/styles.8986bff4.css.map */
