@@ -17,7 +17,7 @@ header {
   padding-bottom: 20px;
   display: grid;
   grid-gap: 4px;
-  grid-template-columns: 230px 1fr 1fr 8fr;
+  grid-template-columns: 230px 1fr 1fr 5fr;
   grid-template-rows: repeat(3, 1fr);
 }
 
@@ -58,13 +58,15 @@ header {
 .stars h3 {
   border: 3px solid #000;
   border-radius: 5px;
-  padding-left: 5px;
+  text-align: center;
+  padding: 5px;
 }
 
 .issues h3 {
   border: 3px solid #000;
   border-radius: 5px;
-  padding-left: 5px;
+  text-align: center;
+  padding: 5px;
 }
 
 img {
@@ -83,25 +85,75 @@ body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
-.button {
-  background: transparent;
-  border: 2px solid transparent;
-  box-sizing: border-box;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1;
-  margin: 18px;
-  padding: 15px 25px;
-  text-align: center;
-  display: inline-block;
-  position: relative;
-  top: 0;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
 li {
   list-style: none;
+}
+
+@media (max-width: 695px) {
+  header {
+    background-color: #0b3c5d;
+    border: 5px solid #1d2731;
+    color: #d9b310;
+    text-align: center;
+    padding: 15px 0px;
+  }
+
+  .loading {
+    color: #100058;
+    text-align: center;
+    padding: 15px 0px;
+  }
+
+  .container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: block;
+  }
+
+  .reponame h1 {
+    text-align: center;
+  }
+
+  .repodescription h4 {
+    text-align: center;
+  }
+
+  .subby {
+    text-align: center;
+  }
+
+  .stars h3 {
+    border: 3px solid #000;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 31vw;
+    margin-right: 31vw;
+  }
+
+  .issues h3 {
+    border: 3px solid #000;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 31vw;
+    margin-right: 31vw;
+  }
+
+  img {
+    border: 5px solid rgb(17, 1, 31);
+    border-radius: 10px;
+    display: block;
+    margin: auto;
+  }
+
+  body {
+    background-color: #dddddd;
+    color: rgba(12, 15, 19, 0.986);
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+  }
+
+  li {
+    list-style: none;
+  }
 }
 
 
